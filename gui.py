@@ -17,41 +17,38 @@ from Bio import SeqIO
 data = ''
 
 
-def show_text():
+def show_text():    #Funcion principal que es llamada en la interfaz grafica
 
 
-   nombre= entry_text.get()
+   nombre= entry_text.get() # Recibe datos de la GUI
    nombrearchivo = nombre + ".pdb"
-   connection=urllib.request.urlopen("https://files.rcsb.org/view/"+nombre+".pdb")
+   connection=urllib.request.urlopen("https://files.rcsb.org/view/"+nombre+".pdb") #Descarga archivo PDB
    output=connection.read().decode('utf-8')
 
 
-   # Write data to file
+   # Escribit datos al archivo
    filename = nombrearchivo
    file2 = open(filename, 'w+')
    file2.write(str(output))
    file2.close()
 
 
-   parser = PDBParser()
-   structure = parser.get_structure(nombre, nombrearchivo)
 
-
-   aa3to1={
+   aa3to1={   #Diccionario para Aminoacidos
       'ALA':'A', 'VAL':'V', 'PHE':'F', 'PRO':'P', 'MET':'M',
       'ILE':'I', 'LEU':'L', 'ASP':'D', 'GLU':'E', 'LYS':'K',
       'ARG':'R', 'SER':'S', 'THR':'T', 'TYR':'Y', 'HIS':'H',
       'CYS':'C', 'ASN':'N', 'GLN':'Q', 'TRP':'W', 'GLY':'G',
       'MSE':'M',
    }
-
+                #Guia para el lector de archivos para que sepa donde buscar 
    ca_pattern=re.compile("^ATOM\s{2,6}\d{1,5}\s{2}CA\s[\sA]([A-Z]{3})\s([\s\w])|^HETATM\s{0,4}\d{1,5}\s{2}CA\s[\sA](MSE)\s([\s\w])")
-   for pdb_file in nombrearchivo:
+   for pdb_file in nombrearchivo: 
        filename=os.path.basename(pdb_file).split('.')[0]
        chain_dict=dict()
        chain_list=[]
 
-
+       #Concatenacion de valores PDB a FASTA
        fp=open(nombrearchivo,'rU')
        for line in fp.read().splitlines():
            if line.startswith("ENDMDL"):
@@ -71,12 +68,13 @@ def show_text():
        datafasta= ''
        datafastaformat = ''
 
-       
+       #Se agrega el Aminoacido "M" a la secuencia y se agrega a un string
        for chain in chain_list:
           datafasta = ('M'+chain + chain_dict[chain])
 
        datafastaformat = datafasta
 
+       #Transformacion del string FASTA para que la GUI lo pueda leer 
        datafastaformat = '<br>'.join(datafastaformat[i:i+80] for i in range(0, len(datafastaformat), 80))
 
 
@@ -90,7 +88,7 @@ def show_text():
 
 
 
-
+   #Calculo de porcentajes
 
    percentlen = len(datafasta)
 
@@ -145,7 +143,7 @@ def show_text():
    y3 = y1 + y2
 
 
-
+   #Lectura de la molecula para la GUI
    ca_pattern=re.compile("^ATOM\s{2,6}\d{1,5}\s{2}CA\s[\sA]([A-Z]{3})\s([\s\w])|^HETATM\s{0,4}\d{1,5}\s{2}CA\s[\sA](MSE)\s([\s\w])")
    for pdb_file in nombrearchivo:
        filename=os.path.basename(pdb_file).split('.')[0]
@@ -163,7 +161,7 @@ def show_text():
                
        fp.close()
 
-
+       #Graficas
    trace1 = go.Bar(
        x=['<a href="http://www.aminoacidsguide.com/Gly.html"> GLY(G): Glycine</a>', '<a href="http://www.aminoacidsguide.com/Ala.html">ALA(A): Alanine</a>','<a href="http://www.aminoacidsguide.com/Val.html"> VAL(V): Valine</a>','<a href="http://www.aminoacidsguide.com/Leu.html">LEU(L): Leucine</a>','<a href="http://www.aminoacidsguide.com/Ile.html">ILE(I): Isoleucine</a>','<a href="http://www.aminoacidsguide.com/Met.html">MET(M): Methionine</a>','<a href="http://www.aminoacidsguide.com/Phe.html">PHE(F): Phenylalanine</a>','<a href="http://www.aminoacidsguide.com/Trp.html">TRP(W): Tryptophan</a>','<a href="http://www.aminoacidsguide.com/Pro.html">PRO(P): Proline</a>'],
        y=[Gly, Ala, Vla, Leu,Ile,Met,Phe,Trp,Pro],
@@ -195,7 +193,7 @@ def show_text():
    ListaX=[]
    ListaY = []
    ListaZ=[]
-
+   #Grafica en 3D
    ca_pattern=re.compile("^ATOM\s{2,6}\d{1,5}\s{2}CA\s[\sA]([A-Z]{3})\s([\s\w])|^HETATM\s{0,4}\d{1,5}\s{2}CA\s[\sA](MSE)\s([\s\w])")
    for pdb_file in nombrearchivo:
        filename=os.path.basename(pdb_file).split('.')[0]
@@ -302,7 +300,7 @@ def show_text():
 
 
 
-
+#-----------------------------------Interfaz Grafica
 root = tk.Tk()
 
 
