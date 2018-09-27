@@ -8,16 +8,15 @@ import plotly.graph_objs as go
 import plotly.offline as ply
 import tkinter as tk
 import PIL
-from PIL import Image, ImageDraw, ImageFont
-import text_to_image
 from tkinter import *
 from Bio.PDB import *
 from Bio import SeqIO
+from PIL import ImageTk, Image
 
 data = ''
 
 
-def show_text():    #Funcion principal que es llamada en la interfaz grafica
+def build_guipro():    #Funcion principal que es llamada en la interfaz grafica
 
 
    nombre= entry_text.get() # Recibe datos de la GUI
@@ -268,7 +267,7 @@ def show_text():    #Funcion principal que es llamada en la interfaz grafica
   "title": title,
   "xaxis": {
     "anchor": "y",
-    "domain": [0.6, 0.93]
+    "domain": [0.52, 0.97]
   },
   "yaxis": {
     "anchor": "x",
@@ -291,7 +290,6 @@ def show_text():    #Funcion principal que es llamada en la interfaz grafica
 
    ply.plot(fig, filename='simple_plot.jpg')
 
-   encoded_image_path = text_to_image.encode("Hello World!", "image.png")
   
 
 
@@ -315,13 +313,18 @@ entry_text = tk.StringVar()
 entry = tk.Entry(root, width=10, textvariable=entry_text)
 entry.pack()
 
+img = ImageTk.PhotoImage(Image.open("logo2.jpg"))
+panel = tk.Label(root, image = img)
+panel.pack(side = "bottom", fill = "both", expand = "yes")
 
 
-button = tk.Button(root, text="Ejecutar", command=show_text)
+
+button = tk.Button(root, text="Ejecutar", command=build_guipro)
 button.pack()
 
 label_text = tk.StringVar()
 label = tk.Label(root, textvariable=label_text)
 label.pack()
+
 
 root.mainloop()
