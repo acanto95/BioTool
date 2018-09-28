@@ -105,7 +105,7 @@ def countEstr(Text):
         
           azar.append(pattern)
 
-          listaresult = [ "alfa= \n",alfa,"---",len(alfa),"---","beta=  \n",beta,"---",len(beta),"---","bgiro=\n  ",bgiro,"---",len(bgiro),"---","azar= \n ",azar,len(azar)]
+          listaresult = [alfa,len(alfa),beta,len(beta),bgiro,len(bgiro),azar,len(azar)]
           
   return listaresult
   
@@ -257,7 +257,7 @@ def build_guipro():    #Funcion principal que es llamada en la interfaz grafica
                
        fp.close()
 
-       title = title + "<br>" + "Numero total de aminoacidos: "+ str(percentlen)
+       title = title + "<br>" + "Numero total de aminoácidos: "+ str(percentlen)
 
        #Graficas
    trace1 = go.Bar(
@@ -374,7 +374,7 @@ def build_guipro():    #Funcion principal que es llamada en la interfaz grafica
     "showgrid": False
   }
    }
-   annotations = { "text":"FASTA: " + datafastaformat +'<br>'+'<a href="http://www.bachem.com/fileadmin/user_upload/pdf/Flyers/Periodic_Chart_Amino_Acids.pdf"><b>Tablas de Aminoacidos</b></a>' ,
+   annotations = { "text":"FASTA: " + datafastaformat +'<br>'+'<a href="http://www.bachem.com/fileadmin/user_upload/pdf/Flyers/Periodic_Chart_Amino_Acids.pdf"><b>Tablas de Aminoácidos</b></a>' ,
                "showarrow": False,
                "xref": "paper",
                "yref": "paper",
@@ -390,7 +390,23 @@ def build_guipro():    #Funcion principal que es llamada en la interfaz grafica
    ply.plot(fig, filename='simple_plot.jpg')
 
 
-   print (countEstr(datafasta))
+
+   lista=countEstr(datafasta)
+   mensaje1=" ".join(lista[0])
+   mensaje1="Alfa: "+mensaje1
+   mensaje2=" ".join(lista[2])
+   mensaje2="Beta: "+mensaje2
+   mensaje3=" ".join(lista[4])
+   mensaje3="Beta giro: "+mensaje3
+   mensaje4=" ".join(lista[6])
+   mensaje4="Azar : "+mensaje4
+      
+   labels = [mensaje1,mensaje2,mensaje3,mensaje4]
+   values = [lista[1],lista[3],lista[5],lista[7]]
+   trace = go.Pie(labels=labels, values=values)
+   ply.plot([trace], filename='basic_pie_chart')
+
+
 
   
 
@@ -408,7 +424,7 @@ img = ImageTk.PhotoImage(Image.open("3.png"))
 panel = bioTool.Label(root, image = img)
 panel.pack(side = "top", fill = "both", expand = "yes")
 
-text2 = Label(root, text="Herramienta bioinformática para analizar proteinas")
+text2 = Label(root, text="Herramienta bioinformática para analizar proteínas")
 text2.pack()
 text3 = Label(root, text="PDB ID:")
 text3.pack()
