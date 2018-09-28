@@ -13,8 +13,102 @@ from Bio.PDB import *
 from Bio import SeqIO
 from PIL import ImageTk, Image
 
+Estructura={"A":[1.25,0.89,0.78],"R":[0.99,1.02,0.88],"N":[0.87,0.86,1.28],"D":[1.03,0.74,1.41], "C":[1.12,0.85,0.8],"E":[1.45,0.65,1], "Q":[1.24,0.82,0.97], "G":[0.57,0.93,1.64], "H":[1.25,1.04,0.69], "I":[0.94,1.41,0.51], "L":[1.32,1.03,0.59], "K":[1.24,0.81,0.96], "M":[1.43,0.99,0.39], "F":[1.08,1.22,0.58], "P":[0.6,0.71,1.91], "S":[0.82,0.96,1.33], "T":[0.81,1.13,1.03], "W":[1.03,1.15,0.75], "Y":[0.75,1.25,1.05], "V":[0.88,1.48,0.47]}
 
 data = ''
+
+
+def probAA (Text):
+
+  prob={}
+  
+  k=3
+  n=len(Text)
+  
+  for i in range (0,n-k+1,3):
+  
+    pattern=Text[i:i+k]
+    
+    prob[pattern]=[0,0,0]
+    
+    prob[pattern][0]=round((Estructura[pattern[0]][0]+Estructura[pattern[1]][0]+Estructura[pattern[2]][0])/3,4)
+    
+    prob[pattern][1]=round((Estructura[pattern[0]][1]+Estructura[pattern[1]][1]+Estructura[pattern[2]][1])/3,4)
+    
+    prob[pattern][2]=round((Estructura[pattern[0]][2]+Estructura[pattern[1]][2]+Estructura[pattern[2]][2])/3,4)
+    
+  return prob 
+
+  
+
+
+#print (Estructura["A"][0]+Estructura["R"][0])
+
+
+#list1=[0.98,0.7,1.18]
+
+#criterios de asignación de estructura alfa, beta, girobeta y azar
+
+def estrAA (Text):
+
+  prob=probAA(Text)
+  
+  estr={}
+  
+  for pattern in prob:
+    if prob[pattern][0]>1.1 and prob[pattern][1]<1.2 and prob[pattern][2]<1.3:
+      estr[pattern]="alfa"
+    else:
+      if prob[pattern][0]<1.1 and prob[pattern][1]>1 and prob[pattern][2]<1.3:
+        estr[pattern]="beta"
+      else:
+        if prob[pattern][0]<1.25 and prob[pattern][1]<1 and prob[pattern][2]>1.15:
+          estr[pattern]="giro beta"
+        else:
+          estr[pattern]="azar"
+  return estr
+  
+#print(estrAA(list1))
+
+#regresa los patrones ordenados por estructura
+
+def countEstr(Text):
+  alfa=[]
+  
+  beta=[]
+  
+  bgiro=[]
+  
+  azar=[]
+  
+  estr=estrAA(Text)
+  
+  for pattern in estr:
+  
+    if estr[pattern]=="alfa":
+    
+      alfa.append(pattern)
+      
+    else:
+    
+      if estr[pattern]=="beta":
+      
+        beta.append(pattern)
+        
+      else :
+      
+        if estr[pattern]=="giro beta":
+        
+          bgiro.append(pattern)
+          
+        else:
+        
+          azar.append(pattern)
+          
+  return "alfa= \n",alfa,"---",len(alfa),"---","beta=  \n",beta,"---",len(beta),"---","bgiro=\n  ",bgiro,"---",len(bgiro),"---","azar= \n ",azar,len(azar)
+  
+#regresa las listas y su cardinalidad
+
 
 
 def build_guipro():    #Funcion principal que es llamada en la interfaz grafica
@@ -293,6 +387,9 @@ def build_guipro():    #Funcion principal que es llamada en la interfaz grafica
 
    ply.plot(fig, filename='simple_plot.jpg')
 
+
+   print (countEstr(datafasta))
+
   
 
 
@@ -302,7 +399,6 @@ def build_guipro():    #Funcion principal que es llamada en la interfaz grafica
 
 
 #-----------------------------------Interfaz Grafica
-#cambiar order objetos y nombre pestaña
 root = bioTool.Tk()
 
 
@@ -310,9 +406,9 @@ img = ImageTk.PhotoImage(Image.open("3.png"))
 panel = bioTool.Label(root, image = img)
 panel.pack(side = "top", fill = "both", expand = "yes")
 
-text2 = Label(root, text="Herramienta bioinformatica para analizar archivos PDB")
+text2 = Label(root, text="Herramienta bioinformática para analizar proteinas")
 text2.pack()
-text3 = Label(root, text="PDB id:")
+text3 = Label(root, text="PDB ID:")
 text3.pack()
 entry_text = bioTool.StringVar()
 entry = bioTool.Entry(root, width=10, textvariable=entry_text)
@@ -322,7 +418,7 @@ entry.pack()
 
 
 
-button = bioTool.Button(root, text="Ejecutar", command=build_guipro)
+button = bioTool.Button(root, text="Desplegar Información", command=build_guipro, height = 3, width = 35)
 button.pack()
 
 label_text = bioTool.StringVar()
