@@ -104,8 +104,10 @@ def countEstr(Text):
         else:
         
           azar.append(pattern)
+
+          listaresult = [ "alfa= \n",alfa,"---",len(alfa),"---","beta=  \n",beta,"---",len(beta),"---","bgiro=\n  ",bgiro,"---",len(bgiro),"---","azar= \n ",azar,len(azar)]
           
-  return "alfa= \n",alfa,"---",len(alfa),"---","beta=  \n",beta,"---",len(beta),"---","bgiro=\n  ",bgiro,"---",len(bgiro),"---","azar= \n ",azar,len(azar)
+  return listaresult
   
 #regresa las listas y su cardinalidad
 
