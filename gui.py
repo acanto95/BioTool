@@ -6,12 +6,13 @@ import numpy as np
 import urllib.request
 import plotly.graph_objs as go
 import plotly.offline as ply
-import tkinter as tk
+import tkinter as bioTool
 import PIL
 from tkinter import *
 from Bio.PDB import *
 from Bio import SeqIO
 from PIL import ImageTk, Image
+
 
 data = ''
 
@@ -65,7 +66,7 @@ def build_guipro():    #Funcion principal que es llamada en la interfaz grafica
 
 
        datafasta= ''
-       datafastaformat = ''
+       datafastaformat = '' ##Variables para darle formato diferente al FASTA
 
        #Se agrega el Aminoacido "M" a la secuencia y se agrega a un string
        for chain in chain_list:
@@ -151,14 +152,16 @@ def build_guipro():    #Funcion principal que es llamada en la interfaz grafica
 
        fp=open(nombrearchivo,'rU')
        for line in fp.read().splitlines():
-           if "MOLECULE" in line:
+           if "MOLECULE" in line: #quitar nombre molecule
                
-               title = line[10:80]
+               title = line[21:80]
                
            elif "CHAIN" in line:
                break
                
        fp.close()
+
+       title = title + "<br>" + "Numero total de aminoacidos: "+ str(percentlen)
 
        #Graficas
    trace1 = go.Bar(
@@ -255,32 +258,32 @@ def build_guipro():    #Funcion principal que es llamada en la interfaz grafica
     "l": 10
   },
   "scene": {"domain": {
-      "x": [0, 0.38],
-      "y": [0.2, 1]
+      "x": [0.52, 0.97],
+      "y": [0.3, 1]
     },
            "xaxis": {"gridcolor": 'white'},
            "yaxis": {"gridcolor": 'white'},
            "zaxis": {"gridcolor": 'white'}
            },
   "showlegend": True,
-  "legend":dict(x=-.1, y=1.2),
+  "legend":dict(x=0, y=1.2),
   "title": title,
   "xaxis": {
     "anchor": "y",
-    "domain": [0.52, 0.97]
+    "domain": [0.01, 0.45]
   },
   "yaxis": {
     "anchor": "x",
-    "domain": [0.2, 1],
+    "domain": [0.26, .95],
     "showgrid": False
   }
    }
-   annotations = { "text":"FASTA: " + datafastaformat ,
+   annotations = { "text":"FASTA: " + datafastaformat +'<br>'+'<a href="http://www.bachem.com/fileadmin/user_upload/pdf/Flyers/Periodic_Chart_Amino_Acids.pdf"><b>Tablas de Aminoacidos</b></a>' ,
                "showarrow": False,
                "xref": "paper",
                "yref": "paper",
-               "x": -0.06,
-               "y": -0.04}
+               "x": 1,
+               "y": 0}
 
    layout['annotations'] = [annotations]
 
@@ -299,32 +302,34 @@ def build_guipro():    #Funcion principal que es llamada en la interfaz grafica
 
 
 #-----------------------------------Interfaz Grafica
-root = tk.Tk()
+#cambiar order objetos y nombre pestaña
+root = bioTool.Tk()
 
+
+img = ImageTk.PhotoImage(Image.open("3.png"))
+panel = bioTool.Label(root, image = img)
+panel.pack(side = "top", fill = "both", expand = "yes")
 
 text2 = Label(root, text="Herramienta bioinformatica para analizar archivos PDB")
 text2.pack()
-
-
 text3 = Label(root, text="PDB id:")
 text3.pack()
-
-entry_text = tk.StringVar()
-entry = tk.Entry(root, width=10, textvariable=entry_text)
+entry_text = bioTool.StringVar()
+entry = bioTool.Entry(root, width=10, textvariable=entry_text)
 entry.pack()
 
-img = ImageTk.PhotoImage(Image.open("logo2.jpg"))
-panel = tk.Label(root, image = img)
-panel.pack(side = "bottom", fill = "both", expand = "yes")
 
 
 
-button = tk.Button(root, text="Ejecutar", command=build_guipro)
+
+button = bioTool.Button(root, text="Ejecutar", command=build_guipro)
 button.pack()
 
-label_text = tk.StringVar()
-label = tk.Label(root, textvariable=label_text)
+label_text = bioTool.StringVar()
+label = bioTool.Label(root, textvariable=label_text)
 label.pack()
+
+root.title("BioTool")
 
 
 root.mainloop()
