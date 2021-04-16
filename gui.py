@@ -12,11 +12,12 @@ from tkinter import *
 from Bio.PDB import *
 from Bio import SeqIO
 from PIL import ImageTk, Image
+import ssl
 
 Estructura={"A":[1.25,0.89,0.78],"R":[0.99,1.02,0.88],"N":[0.87,0.86,1.28],"D":[1.03,0.74,1.41], "C":[1.12,0.85,0.8],"E":[1.45,0.65,1], "Q":[1.24,0.82,0.97], "G":[0.57,0.93,1.64], "H":[1.25,1.04,0.69], "I":[0.94,1.41,0.51], "L":[1.32,1.03,0.59], "K":[1.24,0.81,0.96], "M":[1.43,0.99,0.39], "F":[1.08,1.22,0.58], "P":[0.6,0.71,1.91], "S":[0.82,0.96,1.33], "T":[0.81,1.13,1.03], "W":[1.03,1.15,0.75], "Y":[0.75,1.25,1.05], "V":[0.88,1.48,0.47]}
 
 data = ''
-
+ssl._create_default_https_context = ssl._create_unverified_context
 
 def probAA (Text):
 
@@ -245,8 +246,8 @@ def build_guipro():    #Funcion principal que es llamada en la interfaz grafica
        filename=os.path.basename(pdb_file).split('.')[0]
        chain_dict=dict()
        chain_list=[]
-
-       fp=open(nombrearchivo,'rU')
+       title=""
+       fp=open(nombrearchivo,'r')
        for line in fp.read().splitlines():
            if "MOLECULE" in line: #quitar nombre molecule
                
